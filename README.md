@@ -38,7 +38,7 @@ Creado por **3CB Soluciones y Inyoxz.studios** como parte de un proyecto indepen
 
 ##  Imágenes del juego
 
-![Inicio del juego](public/screenshots/screenshots06.png.png)
+![Inicio del juego](public/screenshots/screenshots06.png)
 ![Inicio del juego](/server/screenshots/screenshots05.png.png)
 ![Inicio del juego](/server/screenshots/screenshots04.png.png)
 ![Inicio del juego](../server/screenshots/screenshots03.png.png)
