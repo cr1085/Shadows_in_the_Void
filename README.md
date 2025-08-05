@@ -3,7 +3,7 @@
 **"Shadows in the Void"** is a first-person psychological horror game set in the sinister, abandoned research facility of **Blackwood Corp**. Your mission is simple: *survive... and escape*.
 
 <img src="public/assets/3cb.png" alt="Game start" width="200"/>
-<img src="public/assets/socio.png" alt="Security puzzle" width="200"/>
+<img src="public/assets/socio.jpg" alt="Security puzzle" width="200"/>
 
 
 
