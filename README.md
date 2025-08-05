@@ -2,7 +2,7 @@
 
 **"Shadows in the Void"** es un juego de terror psicológico en primera persona, ambientado en las siniestras y abandonadas instalaciones de investigación **Blackwood Corp**. Tu misión es simple: *sobrevivir... y escapar*.
 
-Creado por **3CB Soluciones** como parte de un proyecto independiente de alto impacto narrativo y técnico.
+Creado por **3CB Soluciones y Inyoxz.studios** como parte de un proyecto independiente de alto impacto narrativo y técnico.
 
 ---
 
@@ -41,9 +41,9 @@ Creado por **3CB Soluciones** como parte de un proyecto independiente de alto im
 Agrega aquí tus capturas de pantalla en la carpeta `/screenshots` y enlázalas así:
 
 ```markdown
-![Inicio del juego](../server/screenshots/screenshots06.png.png)
-![Inicio del juego](../server/screenshots/screenshots05.png.png)
-![Inicio del juego](../server/screenshots/screenshots04.png.png)
+![Inicio del juego](screenshots/screenshots06.png.png)
+![Inicio del juego](/server/screenshots/screenshots05.png.png)
+![Inicio del juego](/server/screenshots/screenshots04.png.png)
 ![Inicio del juego](../server/screenshots/screenshots03.png.png)
 ![Puzzle de seguridad](../server/screenshots/screenshots01.png)
 ![Encuentro paranormal](../server/screenshots/screenshots07.png)
