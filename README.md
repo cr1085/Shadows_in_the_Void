@@ -55,3 +55,7 @@ Created by **3CB Soluciones and Inyoxz.studios** as part of an independent proje
 ![Puzzle de seguridad](public/screenshots/screenshots01.png)
 ### [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
 ![Encuentro paranormal](public/screenshots/screenshots00.png)
+
+
+> ⚠️ This project is protected. Any unauthorized use of the code or assets is strictly prohibited.
+> Contact 3CB Soluciones for permissions or licensing options.
