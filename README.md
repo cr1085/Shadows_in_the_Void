@@ -11,7 +11,7 @@ Created by **3CB Soluciones and Inyoxz.studios** as part of an independent proje
 
 ---
 
-## 🎮 Features
+##  Features
 
 - Free exploration with FPS-style controls
 - Management of health, sanity, and flashlight battery
@@ -21,14 +21,14 @@ Created by **3CB Soluciones and Inyoxz.studios** as part of an independent proje
 
 ---
 
-## 🧪 Story
+##  Story
 
 > You've awakened alone in the Blackwood facility. The lights flicker. The hallways shift. Something is with you.  
 > Find the key, disable the security system, and escape before the darkness consumes you...
 
 ---
 
-## 🕹️ Controls
+##  Controls
 
 | Key / Action | Function |
 |--------------|----------|
