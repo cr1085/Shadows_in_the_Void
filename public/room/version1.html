@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadows in the Void</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: linear-gradient(to bottom, #1a1a0f, #2d2d1f);
+        }
+
+        .ui {
+            position: absolute;
+            color: #fff;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        #health {
+            top: 20px;
+            left: 20px;
+            color: #ff4444;
+        }
+
+        #sanity {
+            top: 50px;
+            left: 20px;
+            color: #44ff44;
+        }
+
+        #instructions {
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            font-size: 12px;
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff0000;
+            font-size: 24px;
+            display: none;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 100;
+        }
+
+        #ambientText {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="crosshair"></div>
+    
+    <div class="ui" id="health">❤️ Salud: 100</div>
+    <div class="ui" id="sanity">🧠 Cordura: 100</div>
+    <div class="ui" id="instructions">
+        WASD: Mover<br>
+        Mouse: Mirar<br>
+        Click: Linterna<br>
+        R: Correr
+    </div>
+    
+    <div id="ambientText">Los pasillos susurran secretos que no deberías escuchar...</div>
+    
+    <div id="gameOver">
+        <h2>LA OSCURIDAD TE HA CONSUMIDO</h2>
+        <p>Presiona F5 para reintentar escapar...</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Ajustar canvas al tamaño de la ventana
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Estado del juego
+        const game = {
+            player: {
+                x: 400,
+                y: 300,
+                angle: 0,
+                health: 100,
+                sanity: 100,
+                flashlight: false,
+                speed: 2,
+                running: false
+            },
+            monster: {
+                x: 600,
+                y: 200,
+                angle: 0,
+                active: false,
+                huntTime: 0,
+                visible: false
+            },
+            walls: [],
+            lights: [],
+            gameOver: false,
+            time: 0,
+            ambientMessages: [
+                "Algo se mueve en las sombras...",
+                "El aire se vuelve más frío...",
+                "Escuchas respiración que no es tuya...",
+                "Las paredes parecen cerrarse...",
+                "Un gruñido distante resuena...",
+                "La oscuridad te observa..."
+            ]
+        };
+
+        // Generar laberinto de oficina
+        function generateOfficeLayout() {
+            const walls = [];
+            // Paredes exteriores
+            walls.push({x1: 0, y1: 0, x2: canvas.width, y2: 0});
+            walls.push({x1: 0, y1: 0, x2: 0, y2: canvas.height});
+            walls.push({x1: canvas.width, y1: 0, x2: canvas.width, y2: canvas.height});
+            walls.push({x1: 0, y1: canvas.height, x2: canvas.width, y2: canvas.height});
+            
+            // Columnas y paredes internas (como en la imagen)
+            for(let i = 0; i < 8; i++) {
+                for(let j = 0; j < 6; j++) {
+                    if(Math.random() > 0.7) {
+                        const x = 100 + i * 100;
+                        const y = 80 + j * 80;
+                        walls.push({x1: x, y1: y, x2: x + 60, y2: y});
+                        walls.push({x1: x, y1: y, x2: x, y2: y + 60});
+                        walls.push({x1: x + 60, y1: y, x2: x + 60, y2: y + 60});
+                        walls.push({x1: x, y1: y + 60, x2: x + 60, y2: y + 60});
+                    }
+                }
+            }
+            
+            game.walls = walls;
+        }
+
+        // Detectar colisiones
+        function checkCollision(x, y) {
+            for(let wall of game.walls) {
+                const dist = distanceToLine(x, y, wall.x1, wall.y1, wall.x2, wall.y2);
+                if(dist < 15) return true;
+            }
+            return false;
+        }
+
+        function distanceToLine(px, py, x1, y1, x2, y2) {
+            const A = px - x1;
+            const B = py - y1;
+            const C = x2 - x1;
+            const D = y2 - y1;
+            const dot = A * C + B * D;
+            const lenSq = C * C + D * D;
+            let param = -1;
+            if (lenSq !== 0) param = dot / lenSq;
+            let xx, yy;
+            if (param < 0) {
+                xx = x1;
+                yy = y1;
+            } else if (param > 1) {
+                xx = x2;
+                yy = y2;
+            } else {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+            const dx = px - xx;
+            const dy = py - yy;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        // Input del jugador
+        const keys = {};
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            game.player.angle = Math.atan2(mouseY - canvas.height/2, mouseX - canvas.width/2);
+        });
+
+        document.addEventListener('click', () => {
+            game.player.flashlight = !game.player.flashlight;
+            if(game.player.flashlight) {
+                game.player.sanity -= 2; // La linterna consume cordura
+            }
+        });
+
+        // Actualizar juego
+        function update() {
+            if(game.gameOver) return;
+            
+            game.time++;
+            
+            // Movimiento del jugador
+            let speed = game.player.speed;
+            if(keys['r']) {
+                speed *= 1.5;
+                game.player.sanity -= 0.1; // Correr consume cordura
+                game.player.running = true;
+            } else {
+                game.player.running = false;
+            }
+            
+            let newX = game.player.x;
+            let newY = game.player.y;
+            
+            if(keys['w']) {
+                newY -= speed;
+            }
+            if(keys['s']) {
+                newY += speed;
+            }
+            if(keys['a']) {
+                newX -= speed;
+            }
+            if(keys['d']) {
+                newX += speed;
+            }
+            
+            // Aplicar movimiento si no hay colisión
+            if(!checkCollision(newX, game.player.y)) {
+                game.player.x = newX;
+            }
+            if(!checkCollision(game.player.x, newY)) {
+                game.player.y = newY;
+            }
+            
+            // Activar monstruo después de un tiempo
+            if(game.time > 300 && !game.monster.active) {
+                game.monster.active = true;
+                showAmbientMessage("Algo despertó en la oscuridad...");
+            }
+            
+            // IA del monstruo
+            if(game.monster.active) {
+                updateMonster();
+            }
+            
+            // Degeneración de cordura en la oscuridad
+            if(!game.player.flashlight) {
+                game.player.sanity -= 0.05;
+            }
+            
+            // Mensajes ambientales aleatorios
+            if(Math.random() < 0.001) {
+                showAmbientMessage(game.ambientMessages[Math.floor(Math.random() * game.ambientMessages.length)]);
+            }
+            
+            // Condiciones de game over
+            if(game.player.health <= 0 || game.player.sanity <= 0) {
+                gameOver();
+            }
+            
+            updateUI();
+        }
+
+        function updateMonster() {
+            const dx = game.player.x - game.monster.x;
+            const dy = game.player.y - game.monster.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            // El monstruo persigue al jugador
+            if(distance > 50) {
+                const angle = Math.atan2(dy, dx);
+                const speed = 1;
+                
+                const newX = game.monster.x + Math.cos(angle) * speed;
+                const newY = game.monster.y + Math.sin(angle) * speed;
+                
+                if(!checkCollision(newX, newY)) {
+                    game.monster.x = newX;
+                    game.monster.y = newY;
+                }
+            }
+            
+            // El monstruo es visible solo en ciertos momentos
+            game.monster.visible = distance < 200 && (Math.sin(game.time * 0.1) > 0.8 || game.player.flashlight);
+            
+            // Daño al jugador
+            if(distance < 30) {
+                game.player.health -= 2;
+                game.player.sanity -= 5;
+                showAmbientMessage("¡ALGO TE TOCA!");
+            } else if(distance < 100 && game.monster.visible) {
+                game.player.sanity -= 0.5;
+            }
+        }
+
+        // Renderizado
+        function render() {
+            // Limpiar canvas
+            ctx.fillStyle = '#0a0a05';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Efecto de perspectiva de la oficina
+            drawOfficeEnvironment();
+            
+            // Dibujar monstruo si es visible
+            if(game.monster.active && game.monster.visible) {
+                drawMonster();
+            }
+            
+            // Efecto de linterna
+            if(game.player.flashlight) {
+                drawFlashlight();
+            } else {
+                // Efecto de oscuridad
+                drawDarkness();
+            }
+            
+            // Efectos de cordura baja
+            if(game.player.sanity < 50) {
+                drawSanityEffects();
+            }
+        }
+
+        function drawOfficeEnvironment() {
+            // Simular perspectiva 3D simple
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Suelo con patrón de oficina
+            ctx.fillStyle = '#1a1a0f';
+            for(let i = -10; i < 10; i++) {
+                for(let j = -10; j < 10; j++) {
+                    const x = (i * 50) - (game.player.x % 50);
+                    const y = (j * 50) - (game.player.y % 50);
+                    if(Math.abs(x) < canvas.width/2 && Math.abs(y) < canvas.height/2) {
+                        ctx.strokeStyle = '#2d2d1f';
+                        ctx.strokeRect(x, y, 50, 50);
+                    }
+                }
+            }
+            
+            // Columnas y paredes
+            ctx.fillStyle = '#2d2d1f';
+            for(let wall of game.walls) {
+                const x1 = wall.x1 - game.player.x;
+                const y1 = wall.y1 - game.player.y;
+                const x2 = wall.x2 - game.player.x;
+                const y2 = wall.y2 - game.player.y;
+                
+                if(Math.abs(x1) < canvas.width/2 && Math.abs(y1) < canvas.height/2) {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.lineWidth = 8;
+                    ctx.strokeStyle = '#3d3d2f';
+                    ctx.stroke();
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        function drawMonster() {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            const monsterX = game.monster.x - game.player.x;
+            const monsterY = game.monster.y - game.player.y;
+            
+            // Sombra del monstruo
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(monsterX, monsterY + 20, 30, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cuerpo del monstruo (inspirado en la imagen)
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.ellipse(monsterX, monsterY, 25, 40, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Extremidades distorsionadas
+            for(let i = 0; i < 6; i++) {
+                const angle = (game.time * 0.1) + (i * Math.PI / 3);
+                const armX = monsterX + Math.cos(angle) * 20;
+                const armY = monsterY + Math.sin(angle) * 15;
+                
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(monsterX, monsterY);
+                ctx.lineTo(armX, armY);
+                ctx.stroke();
+                
+                // "Manos"
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(armX, armY, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Ojos brillantes
+            ctx.fillStyle = '#ff4400';
+            ctx.beginPath();
+            ctx.arc(monsterX - 8, monsterY - 10, 3, 0, Math.PI * 2);
+            ctx.arc(monsterX + 8, monsterY - 10, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Boca
+            ctx.strokeStyle = '#ff2200';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(monsterX, monsterY, 8, 0, Math.PI);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawFlashlight() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, 150
+            );
+            gradient.addColorStop(0, 'rgba(255,255,200,0.8)');
+            gradient.addColorStop(0.5, 'rgba(255,255,150,0.4)');
+            gradient.addColorStop(1, 'rgba(255,255,100,0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawDarkness() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 50,
+                canvas.width/2, canvas.height/2, 200
+            );
+            gradient.addColorStop(0, 'rgba(0,0,0,0)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.8)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawSanityEffects() {
+            // Distorsión visual cuando la cordura es baja
+            if(Math.random() < 0.1) {
+                ctx.fillStyle = `rgba(${Math.random()*50}, 0, 0, 0.1)`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            // Líneas nerviosas
+            if(game.player.sanity < 30) {
+                ctx.strokeStyle = 'rgba(255,0,0,0.3)';
+                ctx.lineWidth = 1;
+                for(let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('health').textContent = `❤️ Salud: ${Math.max(0, Math.floor(game.player.health))}`;
+            document.getElementById('sanity').textContent = `🧠 Cordura: ${Math.max(0, Math.floor(game.player.sanity))}`;
+            
+            // Cambiar color según el estado
+            const healthEl = document.getElementById('health');
+            const sanityEl = document.getElementById('sanity');
+            
+            healthEl.style.color = game.player.health > 50 ? '#ff4444' : '#ff0000';
+            sanityEl.style.color = game.player.sanity > 50 ? '#44ff44' : '#ffff00';
+            
+            if(game.player.sanity < 30) {
+                sanityEl.style.color = '#ff0000';
+            }
+        }
+
+        function showAmbientMessage(message) {
+            const ambientEl = document.getElementById('ambientText');
+            ambientEl.textContent = message;
+            ambientEl.style.opacity = '1';
+            setTimeout(() => {
+                ambientEl.style.opacity = '0.3';
+            }, 3000);
+        }
+
+        function gameOver() {
+            game.gameOver = true;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        // Loop principal del juego
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Inicializar juego
+        generateOfficeLayout();
+        showAmbientMessage("Despiertas en un lugar que no reconoces...");
+        gameLoop();
+
+        // Bloquear menú contextual
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

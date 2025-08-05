@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Introducción XP Quest</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: black;
+      overflow: hidden;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    video, .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1.5s ease-in-out;
+    }
+    video.active, .slide.active {
+      opacity: 1;
+    }
+    .btn-continuar {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #00ffff;
+      color: black;
+      padding: 12px 24px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      display: none;
+      animation: fadeIn 1s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🎬 Videos de introducción -->
+  <video class="intro-video active" src="../assets/intro_uno.mp4" autoplay muted></video>
+  <video class="intro-video" src="../assets/intro_dos.mp4" muted></video>
+  <video class="intro-video" src="../assets/intro_tres.mp4" muted></video>
+
+  <!-- 🖼️ Imágenes tipo slide -->
+  <div class="slide" style="background-image: url('../assets/3cb.png'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+  <div class="slide" style="background-image: url('../assets/socio.jpg'); background-size: contain; background-repeat: no-repeat; background-position: center;"></div>
+
+  <!-- ✅ Botón para pasar al menú -->
+  <button class="btn-continuar" onclick="window.location.href='../auth/login.html'">Entrar al juego</button>
+
+  <script>
+    const videos = document.querySelectorAll('.intro-video');
+    const slides = document.querySelectorAll('.slide');
+    const btn = document.querySelector('.btn-continuar');
+
+    let index = 0;
+
+    function playNextVideo() {
+      if (index < videos.length - 1) {
+        videos[index].classList.remove('active');
+        index++;
+        videos[index].classList.add('active');
+        videos[index].play();
+      } else {
+        // Todos los videos terminados → pasar a imágenes
+        videos[index].classList.remove('active');
+        mostrarSlides();
+      }
+    }
+
+    videos.forEach((video, i) => {
+      video.onended = playNextVideo;
+    });
+
+    // Slides
+    let slideIndex = 0;
+    function mostrarSlides() {
+      slides[slideIndex].classList.add('active');
+      const intervalo = setInterval(() => {
+        slides[slideIndex].classList.remove('active');
+        slideIndex++;
+        if (slideIndex < slides.length) {
+          slides[slideIndex].classList.add('active');
+        } else {
+          clearInterval(intervalo);
+          btn.style.display = 'block';
+        }
+      }, 3000); // 3 segundos por slide
+    }
+  </script>
+</body>
+</html>

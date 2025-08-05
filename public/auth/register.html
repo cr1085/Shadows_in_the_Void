@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro - WinClassic</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #111, #000);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .register-box {
+      background-color: #1a1a1a;
+      padding: 35px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+      width: 320px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #ff6666;
+    }
+
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #2e2e2e;
+      color: white;
+    }
+
+    button {
+      background-color: #ff6666;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    a {
+      display: block;
+      margin-top: 10px;
+      color: #aaa;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    a:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>Crear Cuenta</h2>
+    <input type="text" placeholder="Nombre de usuario" />
+    <input type="email" placeholder="Correo electrónico" />
+    <input type="password" placeholder="Contraseña" />
+    <button onclick="window.location.href='login.html'">Registrarse</button>
+    <a href="login.html">¿Ya tienes cuenta? Inicia sesión</a>
+  </div>
+</body>
+</html>

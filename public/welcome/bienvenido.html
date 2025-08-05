@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dreamnight CMD Intro</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00FF00;
+      font-family: 'Courier New', Courier, monospace;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    #terminal {
+      width: 33%;
+      min-width: 320px;
+      max-width: 600px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    #botones {
+      margin-top: 20px;
+      display: none;
+      gap: 10px;
+    }
+
+    .cmd-btn {
+      background: black;
+      border: 1px solid #00FF00;
+      color: #00FF00;
+      padding: 5px 15px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .cmd-btn:hover {
+      background: #002200;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="terminal"></div>
+  <div id="botones">
+    <button class="cmd-btn" onclick="continuar()">Sí</button>
+    <button class="cmd-btn" onclick="salir()">No</button>
+  </div>
+
+  <script>
+    const terminal = document.getElementById('terminal');
+    const botones = document.getElementById('botones');
+
+    const mensaje = `hola viajero :) veo que haz encontrado la puerta, bienvenido al dreamnight, es un lugar extraño, un espacio vacío que el universo trata de llenar con elementos ya existentes, varios humanos han quedado atrapados en este sitio, tal vez mientras más avances llegues a toparte a uno que otro conocido, pero basta de tanta charla, iré al grano..........yo soy el responsable de este lugar, quiero que me detengas, pero al mismo tiempo no puedo permitírtelo.....¿quieres intentarlo de todos modos?\n`;
+
+    let i = 0;
+
+    function escribirTexto() {
+      if (i < mensaje.length) {
+        terminal.innerHTML += mensaje.charAt(i);
+        i++;
+        setTimeout(escribirTexto, 30); // Velocidad de tipeo
+      } else {
+        botones.style.display = 'flex';
+      }
+    }
+
+    escribirTexto();
+
+    function continuar() {
+      terminal.innerHTML += "\n> Sí\n\nentonces entra.......";
+      setTimeout(() => {
+        window.location.href = "../menu/menu.html";
+        // window.location.href = "auth/login.html";
+      }, 3000);
+    }
+
+    function salir() {
+      terminal.innerHTML += "\n> No\n\nentonces no me hagas perder mi tiempo....";
+      setTimeout(() => {
+        window.close(); // Intenta cerrar la pestaña
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>

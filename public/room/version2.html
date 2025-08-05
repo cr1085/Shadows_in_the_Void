@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadows in the Void - Enhanced</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        #gameCanvas {
+            display: block;
+            background: linear-gradient(to bottom, #1a1a0f, #2d2d1f);
+        }
+
+        .ui {
+            position: absolute;
+            color: #fff;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        #health {
+            top: 20px;
+            left: 20px;
+            color: #ff4444;
+        }
+
+        #sanity {
+            top: 50px;
+            left: 20px;
+            color: #44ff44;
+        }
+
+        #battery {
+            top: 80px;
+            left: 20px;
+            color: #ffff44;
+        }
+
+        #inventory {
+            top: 110px;
+            left: 20px;
+            font-size: 12px;
+            color: #cccccc;
+        }
+
+        #objective {
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            color: #44ffff;
+            font-size: 16px;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+
+        #instructions {
+            top: 20px;
+            right: 20px;
+            text-align: right;
+            font-size: 12px;
+        }
+
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #ff0000;
+            font-size: 24px;
+            display: none;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #ff0000;
+        }
+
+        #victory {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #00ff00;
+            font-size: 24px;
+            display: none;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #00ff00;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 100;
+        }
+
+        #ambientText {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+            font-style: italic;
+            text-align: center;
+        }
+
+        #puzzle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #ffff00;
+            display: none;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        #puzzleInput {
+            margin: 10px;
+            padding: 5px;
+            font-size: 16px;
+            background: #333;
+            color: #fff;
+            border: 1px solid #666;
+            text-align: center;
+        }
+
+        .button {
+            background: #444;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .button:hover {
+            background: #555;
+        }
+
+        #interactPrompt {
+            position: absolute;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ffff00;
+            font-size: 16px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="crosshair"></div>
+    
+    <div class="ui" id="health">❤️ Salud: 100</div>
+    <div class="ui" id="sanity">🧠 Cordura: 100</div>
+    <div class="ui" id="battery">🔋 Batería: 100</div>
+    <div class="ui" id="inventory">📦 Inventario: Vacío</div>
+    <div class="ui" id="objective">🎯 Encuentra la llave y escapa</div>
+    
+    <div class="ui" id="instructions">
+        WASD: Mover<br>
+        Mouse: Mirar<br>
+        Click: Linterna<br>
+        R: Correr<br>
+        E: Interactuar<br>
+        ESC: Pausar
+    </div>
+    
+    <div id="ambientText">Has despertado en las Instalaciones Blackwood... algo salió terriblemente mal...</div>
+    
+    <div id="interactPrompt">Presiona E para interactuar</div>
+    
+    <div id="puzzle">
+        <h3>Terminal de Seguridad</h3>
+        <p id="puzzleText">Ingresa el código de acceso:</p>
+        <input type="text" id="puzzleInput" maxlength="4" placeholder="####">
+        <br>
+        <button class="button" onclick="submitPuzzle()">Confirmar</button>
+        <button class="button" onclick="closePuzzle()">Cancelar</button>
+    </div>
+    
+    <div id="gameOver">
+        <h2>LA OSCURIDAD TE HA CONSUMIDO</h2>
+        <p id="deathMessage">Las criaturas de Blackwood han reclamado otra víctima...</p>
+        <button class="button" onclick="location.reload()">Reintentar Escape</button>
+    </div>
+
+    <div id="victory">
+        <h2>¡HAS ESCAPADO!</h2>
+        <p>Lograste salir de las Instalaciones Blackwood con vida...</p>
+        <p>Pero las pesadillas nunca te abandonarán.</p>
+        <button class="button" onclick="location.reload()">Jugar de Nuevo</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Estado del juego expandido
+        const game = {
+            player: {
+                x: 400,
+                y: 300,
+                angle: 0,
+                health: 100,
+                sanity: 200,
+                battery: 100,
+                flashlight: false,
+                speed: 2,
+                running: false,
+                inventory: {
+                    key: false,
+                    keycard: false,
+                    medkit: 0,
+                    batteries: 0,
+                    documents: 0
+                }
+            },
+            monsters: {
+                shadow: {
+                    x: 600,
+                    y: 200,
+                    angle: 0,
+                    active: false,
+                    huntTime: 0,
+                    visible: false,
+                    speed: 1
+                },
+                wraith: {
+                    x: 200,
+                    y: 500,
+                    angle: 0,
+                    active: false,
+                    huntTime: 0,
+                    visible: false,
+                    speed: 1.5,
+                    teleportTimer: 0,
+                    aggressive: false
+                }
+            },
+            objects: {
+                door: { x: 100, y: 100, locked: true, requiresKey: true },
+                terminal: { x: 700, y: 150, active: true, code: "1947", solved: false },
+                items: []
+            },
+            walls: [],
+            gameOver: false,
+            victory: false,
+            time: 0,
+            currentPuzzle: null,
+            nearestObject: null,
+            difficulty: 1,
+            ambientMessages: [
+                "Los sistemas de seguridad fallaron hace horas...",
+                "Experimento Umbral: CONTENCIÓN FALLIDA",
+                "Algo se mueve en las sombras...",
+                "El aire se vuelve más frío...",
+                "Los sujetos de prueba han escapado...",
+                "Las luces de emergencia parpadean...",
+                "Un gruñido distante resuena...",
+                "ERROR: PROTOCOLO DE EVACUACIÓN ACTIVADO",
+                "La oscuridad te observa...",
+                "Temperatura corporal detectada..."
+            ]
+        };
+
+        // Generar layout de instalaciones
+        function generateFacilityLayout() {
+            const walls = [];
+            // Paredes exteriores
+            walls.push({x1: 0, y1: 0, x2: canvas.width, y2: 0});
+            walls.push({x1: 0, y1: 0, x2: 0, y2: canvas.height});
+            walls.push({x1: canvas.width, y1: 0, x2: canvas.width, y2: canvas.height});
+            walls.push({x1: 0, y1: canvas.height, x2: canvas.width, y2: canvas.height});
+            
+            // Laboratorio principal con pasillos
+            for(let i = 0; i < 12; i++) {
+                for(let j = 0; j < 8; j++) {
+                    if(Math.random() > 0.6) {
+                        const x = 80 + i * 80;
+                        const y = 60 + j * 70;
+                        if(x < canvas.width - 100 && y < canvas.height - 100) {
+                            walls.push({x1: x, y1: y, x2: x + 50, y2: y});
+                            walls.push({x1: x, y1: y, x2: x, y2: y + 50});
+                            walls.push({x1: x + 50, y1: y, x2: x + 50, y2: y + 50});
+                            walls.push({x1: x, y1: y + 50, x2: x + 50, y2: y + 50});
+                        }
+                    }
+                }
+            }
+            
+            game.walls = walls;
+            generateItems();
+        }
+
+        // Generar objetos y items
+        function generateItems() {
+            const items = [];
+            
+            // Llave principal (oculta)
+            items.push({
+                type: 'key',
+                x: Math.random() * (canvas.width - 200) + 100,
+                y: Math.random() * (canvas.height - 200) + 100,
+                collected: false,
+                name: 'Llave de Salida',
+                description: 'La llave que abre la puerta de escape'
+            });
+            
+            // Tarjeta de acceso
+            items.push({
+                type: 'keycard',
+                x: Math.random() * (canvas.width - 200) + 100,
+                y: Math.random() * (canvas.height - 200) + 100,
+                collected: false,
+                name: 'Tarjeta de Acceso',
+                description: 'Necesaria para el terminal de seguridad'
+            });
+            
+            // Baterías
+            for(let i = 0; i < 3; i++) {
+                items.push({
+                    type: 'battery',
+                    x: Math.random() * (canvas.width - 200) + 100,
+                    y: Math.random() * (canvas.height - 200) + 100,
+                    collected: false,
+                    name: 'Batería',
+                    description: 'Recarga tu linterna'
+                });
+            }
+            
+            // Kits médicos
+            for(let i = 0; i < 2; i++) {
+                items.push({
+                    type: 'medkit',
+                    x: Math.random() * (canvas.width - 200) + 100,
+                    y: Math.random() * (canvas.height - 200) + 100,
+                    collected: false,
+                    name: 'Kit Médico',
+                    description: 'Restaura salud'
+                });
+            }
+            
+            // Documentos con pistas
+            const documents = [
+                { code: "1947", hint: "Año de fundación de Blackwood Corp" },
+                { code: "0666", hint: "Número de sujetos del Experimento Umbral" },
+                { code: "2012", hint: "Última fecha de calibración del sistema" }
+            ];
+            
+            for(let i = 0; i < 2; i++) {
+                items.push({
+                    type: 'document',
+                    x: Math.random() * (canvas.width - 200) + 100,
+                    y: Math.random() * (canvas.height - 200) + 100,
+                    collected: false,
+                    name: 'Documento Clasificado',
+                    description: documents[i].hint,
+                    code: documents[i].code
+                });
+            }
+            
+            game.objects.items = items;
+        }
+
+        // Sistema de colisiones
+        function checkCollision(x, y) {
+            for(let wall of game.walls) {
+                const dist = distanceToLine(x, y, wall.x1, wall.y1, wall.x2, wall.y2);
+                if(dist < 15) return true;
+            }
+            return false;
+        }
+
+        function distanceToLine(px, py, x1, y1, x2, y2) {
+            const A = px - x1;
+            const B = py - y1;
+            const C = x2 - x1;
+            const D = y2 - y1;
+            const dot = A * C + B * D;
+            const lenSq = C * C + D * D;
+            let param = -1;
+            if (lenSq !== 0) param = dot / lenSq;
+            let xx, yy;
+            if (param < 0) {
+                xx = x1;
+                yy = y1;
+            } else if (param > 1) {
+                xx = x2;
+                yy = y2;
+            } else {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+            const dx = px - xx;
+            const dy = py - yy;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        // Input expandido
+        const keys = {};
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('keydown', (e) => {
+            keys[e.key.toLowerCase()] = true;
+            
+            if(e.key.toLowerCase() === 'e' && game.nearestObject) {
+                interactWithObject();
+                e.preventDefault();
+            }
+            if(e.key === 'Escape') {
+                togglePause();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key.toLowerCase()] = false;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            game.player.angle = Math.atan2(mouseY - canvas.height/2, mouseX - canvas.width/2);
+        });
+
+        document.addEventListener('click', () => {
+            if(game.player.battery > 0) {
+                game.player.flashlight = !game.player.flashlight;
+            }
+        });
+
+        // Sistema de interacción
+        function interactWithObject() {
+            if(!game.nearestObject) return;
+            
+            const obj = game.nearestObject;
+            
+            if(obj.type === 'door') {
+                if(game.player.inventory.key && game.objects.terminal.solved) {
+                    victory();
+                } else if(!game.player.inventory.key) {
+                    showAmbientMessage("Necesitas la llave de salida");
+                } else if(!game.objects.terminal.solved) {
+                    showAmbientMessage("El sistema de seguridad sigue activo");
+                }
+            } else if(obj.type === 'terminal') {
+                if(game.player.inventory.keycard) {
+                    showPuzzle();
+                } else {
+                    showAmbientMessage("Necesitas una tarjeta de acceso");
+                }
+            } else if(obj.type === 'item') {
+                const item = game.objects.items[obj.itemIndex];
+                collectItem(item);
+            }
+        }
+
+        function collectItem(item) {
+            item.collected = true;
+            
+            switch(item.type) {
+                case 'key':
+                    game.player.inventory.key = true;
+                    showAmbientMessage("¡Encontraste la llave de salida!");
+                    updateObjective("Desactiva el sistema de seguridad");
+                    break;
+                case 'keycard':
+                    game.player.inventory.keycard = true;
+                    showAmbientMessage("Tarjeta de acceso obtenida");
+                    break;
+                case 'battery':
+                    game.player.inventory.batteries++;
+                    game.player.battery = Math.min(100, game.player.battery + 50);
+                    showAmbientMessage("Batería recargada");
+                    break;
+                case 'medkit':
+                    game.player.inventory.medkit++;
+                    game.player.health = Math.min(100, game.player.health + 40);
+                    showAmbientMessage("Salud restaurada");
+                    break;
+                case 'document':
+                    game.player.inventory.documents++;
+                    showAmbientMessage(`Pista encontrada: ${item.description}`);
+                    break;
+            }
+        }
+
+        // Sistema de puzzles
+        function showPuzzle() {
+            document.getElementById('puzzle').style.display = 'block';
+            document.getElementById('puzzleInput').focus();
+            game.currentPuzzle = 'terminal';
+        }
+
+        function closePuzzle() {
+            document.getElementById('puzzle').style.display = 'none';
+            game.currentPuzzle = null;
+        }
+
+        function submitPuzzle() {
+            const input = document.getElementById('puzzleInput').value;
+            
+            if(input === game.objects.terminal.code) {
+                game.objects.terminal.solved = true;
+                game.objects.door.locked = false;  // Desbloquear puerta
+                showAmbientMessage("¡Sistema de seguridad desactivado!");
+                updateObjective("¡Dirígete a la puerta de salida!");
+                closePuzzle();
+                
+                // Activar el segundo monstruo cuando se resuelve el puzzle
+                game.monsters.wraith.active = true;
+                game.monsters.wraith.aggressive = true;
+                showAmbientMessage("⚠️ ALERTA: Detección de actividad paranormal CRÍTICA");
+            } else {
+                showAmbientMessage("Código incorrecto. Busca más pistas.");
+                game.player.sanity -= 10;
+                document.getElementById('puzzleInput').value = '';
+            }
+        }
+
+        // Actualización principal
+        function update() {
+            if(game.gameOver || game.victory) return;
+            
+            game.time++;
+            
+            // Movimiento del jugador
+            updatePlayerMovement();
+            
+            // Activar primer monstruo
+            if(game.time > 180 && !game.monsters.shadow.active) {  // Reducido de 300 a 180
+                game.monsters.shadow.active = true;
+                showAmbientMessage("Algo despertó en la instalación...");
+            }
+            
+            // Actualizar monstruos
+            updateMonsters();
+            
+            // Degeneración de recursos
+            updateResourceDegradation();
+            
+            // Detectar objetos cercanos
+            detectNearbyObjects();
+            
+            // Mensajes ambientales
+            if(Math.random() < 0.001) {
+                showAmbientMessage(game.ambientMessages[Math.floor(Math.random() * game.ambientMessages.length)]);
+            }
+            
+            // Condiciones de game over
+            if(game.player.health <= 0 || game.player.sanity <= 0) {
+                gameOver();
+            }
+            
+            updateUI();
+        }
+
+        function updatePlayerMovement() {
+            let speed = game.player.speed;
+            if(keys['r']) {
+                speed *= 1.8;
+                game.player.sanity -= 0.15;
+                game.player.running = true;
+            } else {
+                game.player.running = false;
+            }
+            
+            let newX = game.player.x;
+            let newY = game.player.y;
+            
+            if(keys['w']) newY -= speed;
+            if(keys['s']) newY += speed;
+            if(keys['a']) newX -= speed;
+            if(keys['d']) newX += speed;
+            
+            if(!checkCollision(newX, game.player.y)) {
+                game.player.x = newX;
+            }
+            if(!checkCollision(game.player.x, newY)) {
+                game.player.y = newY;
+            }
+        }
+
+        function updateMonsters() {
+            // Monstruo sombra (original)
+            if(game.monsters.shadow.active) {
+                updateShadowMonster();
+            }
+            
+            // Wraith (nuevo monstruo más peligroso)
+            if(game.monsters.wraith.active) {
+                updateWraithMonster();
+            }
+        }
+
+        function updateShadowMonster() {
+            const shadow = game.monsters.shadow;
+            const dx = game.player.x - shadow.x;
+            const dy = game.player.y - shadow.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if(distance > 60) {
+                const angle = Math.atan2(dy, dx);
+                const newX = shadow.x + Math.cos(angle) * shadow.speed;
+                const newY = shadow.y + Math.sin(angle) * shadow.speed;
+                
+                if(!checkCollision(newX, newY)) {
+                    shadow.x = newX;
+                    shadow.y = newY;
+                }
+            }
+            
+            shadow.visible = distance < 250 && (Math.sin(game.time * 0.1) > 0.7 || game.player.flashlight);
+            
+            if(distance < 35) {
+                game.player.health -= 1.5;
+                game.player.sanity -= 3;
+                showAmbientMessage("¡La sombra te drena la vida!");
+            } else if(distance < 120 && shadow.visible) {
+                game.player.sanity -= 0.3;
+            }
+        }
+
+        function updateWraithMonster() {
+            const wraith = game.monsters.wraith;
+            const dx = game.player.x - wraith.x;
+            const dy = game.player.y - wraith.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            wraith.teleportTimer++;
+            
+            // El Wraith puede teletransportarse
+            if(wraith.teleportTimer > 180 && distance > 300) {
+                wraith.x = game.player.x + (Math.random() - 0.5) * 200;
+                wraith.y = game.player.y + (Math.random() - 0.5) * 200;
+                wraith.teleportTimer = 0;
+                showAmbientMessage("Algo apareció cerca...");
+            }
+            
+            // Movimiento más agresivo
+            if(distance > 40) {
+                const angle = Math.atan2(dy, dx);
+                const newX = wraith.x + Math.cos(angle) * wraith.speed;
+                const newY = wraith.y + Math.sin(angle) * wraith.speed;
+                
+                if(!checkCollision(newX, newY)) {
+                    wraith.x = newX;
+                    wraith.y = newY;
+                }
+            }
+            
+            // Más visible y agresivo
+            wraith.visible = distance < 300 && (Math.sin(game.time * 0.15) > 0.5 || game.player.flashlight);
+            
+            if(distance < 30) {
+                game.player.health -= 3;
+                game.player.sanity -= 8;
+                showAmbientMessage("¡EL WRAITH TE ESTÁ MATANDO!");
+            } else if(distance < 100 && wraith.visible) {
+                game.player.sanity -= 0.8;
+            }
+        }
+
+        function updateResourceDegradation() {
+            if(game.player.flashlight && game.player.battery > 0) {
+                game.player.battery -= 0.2;
+                if(game.player.battery <= 0) {
+                    game.player.flashlight = false;
+                    showAmbientMessage("¡Tu linterna se quedó sin batería!");
+                }
+            }
+            
+            if(!game.player.flashlight) {
+                game.player.sanity -= 0.08;
+            }
+            
+            // La sanity baja más rápido con múltiples monstruos activos
+            if(game.monsters.shadow.active && game.monsters.wraith.active) {
+                game.player.sanity -= 0.02;
+            }
+        }
+
+        function detectNearbyObjects() {
+            let nearestObj = null;
+            let minDistance = 60; // Aumentado para mejor detección
+            
+            // Comprobar puerta
+            const doorDist = Math.sqrt(
+                Math.pow(game.player.x - game.objects.door.x, 2) + 
+                Math.pow(game.player.y - game.objects.door.y, 2)
+            );
+            if(doorDist < minDistance) {
+                nearestObj = { type: 'door', distance: doorDist };
+                minDistance = doorDist;
+            }
+            
+            // Comprobar terminal
+            const terminalDist = Math.sqrt(
+                Math.pow(game.player.x - game.objects.terminal.x, 2) + 
+                Math.pow(game.player.y - game.objects.terminal.y, 2)
+            );
+            if(terminalDist < minDistance) {
+                nearestObj = { type: 'terminal', distance: terminalDist };
+                minDistance = terminalDist;
+            }
+            
+            // Comprobar items
+            for(let i = 0; i < game.objects.items.length; i++) {
+                const item = game.objects.items[i];
+                if(!item.collected) {
+                    const itemDist = Math.sqrt(
+                        Math.pow(game.player.x - item.x, 2) + 
+                        Math.pow(game.player.y - item.y, 2)
+                    );
+                    if(itemDist < minDistance) {
+                        nearestObj = { type: 'item', itemIndex: i, distance: itemDist };
+                        minDistance = itemDist;
+                    }
+                }
+            }
+            
+            game.nearestObject = nearestObj;
+            
+            const prompt = document.getElementById('interactPrompt');
+            if(nearestObj) {
+                prompt.style.display = 'block';
+                if(nearestObj.type === 'door') {
+                    prompt.textContent = "Presiona E para abrir la puerta";
+                } else if(nearestObj.type === 'terminal') {
+                    prompt.textContent = "Presiona E para usar el terminal";
+                } else if(nearestObj.type === 'item') {
+                    const item = game.objects.items[nearestObj.itemIndex];
+                    prompt.textContent = `Presiona E para recoger ${item.name}`;
+                }
+            } else {
+                prompt.style.display = 'none';
+            }
+        }
+
+        // Renderizado mejorado
+        function render() {
+            ctx.fillStyle = '#0a0a05';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            drawFacilityEnvironment();
+            drawObjects();
+            drawItems();
+            drawMonsters();
+            
+            if(game.player.flashlight && game.player.battery > 0) {
+                drawFlashlight();
+            } else {
+                drawDarkness();
+            }
+            
+            if(game.player.sanity < 50) {
+                drawSanityEffects();
+            }
+        }
+
+        function drawFacilityEnvironment() {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Suelo de laboratorio
+            ctx.fillStyle = '#1a1a0f';
+            for(let i = -15; i < 15; i++) {
+                for(let j = -15; j < 15; j++) {
+                    const x = (i * 40) - (game.player.x % 40);
+                    const y = (j * 40) - (game.player.y % 40);
+                    if(Math.abs(x) < canvas.width/2 && Math.abs(y) < canvas.height/2) {
+                        ctx.strokeStyle = '#2d2d1f';
+                        ctx.strokeRect(x, y, 40, 40);
+                        
+                        // Detalles del laboratorio
+                        if((i + j) % 3 === 0) {
+                            ctx.fillStyle = '#252520';
+                            ctx.fillRect(x + 5, y + 5, 30, 30);
+                        }
+                    }
+                }
+            }
+            
+            // Paredes del laboratorio
+            ctx.fillStyle = '#2d2d1f';
+            for(let wall of game.walls) {
+                const x1 = wall.x1 - game.player.x;
+                const y1 = wall.y1 - game.player.y;
+                const x2 = wall.x2 - game.player.x;
+                const y2 = wall.y2 - game.player.y;
+                
+                if(Math.abs(x1) < canvas.width/2 && Math.abs(y1) < canvas.height/2) {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.lineWidth = 10;
+                    ctx.strokeStyle = '#3d3d2f';
+                    ctx.stroke();
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        function drawObjects() {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Puerta de salida
+            const doorX = game.objects.door.x - game.player.x;
+            const doorY = game.objects.door.y - game.player.y;
+            
+            if(Math.abs(doorX) < canvas.width/2 && Math.abs(doorY) < canvas.height/2) {
+                ctx.fillStyle = game.objects.door.locked ? '#8b4513' : '#4b8b3d';
+                ctx.fillRect(doorX - 15, doorY - 25, 30, 50);
+                
+                // Marco de la puerta
+                ctx.strokeStyle = '#654321';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(doorX - 18, doorY - 28, 36, 56);
+                
+                // Manija
+                ctx.fillStyle = '#c0c0c0';
+                ctx.beginPath();
+                ctx.arc(doorX + 10, doorY, 3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Indicador de estado
+                if(game.objects.door.locked) {
+                    ctx.fillStyle = '#ff0000';
+                    ctx.fillText('🔒', doorX - 5, doorY - 35);
+                } else {
+                    ctx.fillStyle = '#00ff00';
+                    ctx.fillText('🔓', doorX - 5, doorY - 35);
+                }
+            }
+            
+            // Terminal de seguridad
+            const terminalX = game.objects.terminal.x - game.player.x;
+            const terminalY = game.objects.terminal.y - game.player.y;
+            
+            if(Math.abs(terminalX) < canvas.width/2 && Math.abs(terminalY) < canvas.height/2) {
+                // Base del terminal
+                ctx.fillStyle = '#333333';
+                ctx.fillRect(terminalX - 20, terminalY - 15, 40, 30);
+                
+                // Pantalla
+                ctx.fillStyle = game.objects.terminal.solved ? '#00ff00' : '#0080ff';
+                ctx.fillRect(terminalX - 15, terminalY - 10, 30, 20);
+                
+                // Texto en pantalla
+                ctx.fillStyle = '#000000';
+                ctx.font = '8px monospace';
+                ctx.textAlign = 'center';
+                if(game.objects.terminal.solved) {
+                    ctx.fillText('ACCESS', terminalX, terminalY - 2);
+                    ctx.fillText('GRANTED', terminalX, terminalY + 6);
+                } else {
+                    ctx.fillText('SECURITY', terminalX, terminalY - 2);
+                    ctx.fillText('LOCKED', terminalX, terminalY + 6);
+                }
+                
+                // Teclado
+                ctx.fillStyle = '#555555';
+                ctx.fillRect(terminalX - 12, terminalY + 12, 24, 8);
+                
+                // Indicador de actividad
+                if(!game.objects.terminal.solved) {
+                    ctx.fillStyle = `hsl(${(game.time * 5) % 360}, 100%, 50%)`;
+                    ctx.beginPath();
+                    ctx.arc(terminalX + 18, terminalY - 12, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        function drawItems() {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            for(let item of game.objects.items) {
+                if(item.collected) continue;
+                
+                const itemX = item.x - game.player.x;
+                const itemY = item.y - game.player.y;
+                
+                if(Math.abs(itemX) < canvas.width/2 && Math.abs(itemY) < canvas.height/2) {
+                    // Efecto de brillo
+                    const glowAlpha = (Math.sin(game.time * 0.1) + 1) * 0.3 + 0.2;
+                    ctx.shadowBlur = 10;
+                    
+                    switch(item.type) {
+                        case 'key':
+                            ctx.shadowColor = '#ffff00';
+                            ctx.fillStyle = `rgba(255, 255, 0, ${glowAlpha})`;
+                            ctx.fillText('🔑', itemX - 8, itemY + 4);
+                            break;
+                        case 'keycard':
+                            ctx.shadowColor = '#00ffff';
+                            ctx.fillStyle = `rgba(0, 255, 255, ${glowAlpha})`;
+                            ctx.fillRect(itemX - 6, itemY - 4, 12, 8);
+                            ctx.fillStyle = '#000000';
+                            ctx.fillRect(itemX - 4, itemY - 2, 8, 4);
+                            break;
+                        case 'battery':
+                            ctx.shadowColor = '#ffff00';
+                            ctx.fillStyle = `rgba(255, 255, 0, ${glowAlpha})`;
+                            ctx.fillText('🔋', itemX - 8, itemY + 4);
+                            break;
+                        case 'medkit':
+                            ctx.shadowColor = '#ff0000';
+                            ctx.fillStyle = `rgba(255, 0, 0, ${glowAlpha})`;
+                            ctx.fillText('🏥', itemX - 8, itemY + 4);
+                            break;
+                        case 'document':
+                            ctx.shadowColor = '#ffffff';
+                            ctx.fillStyle = `rgba(255, 255, 255, ${glowAlpha})`;
+                            ctx.fillText('📄', itemX - 8, itemY + 4);
+                            break;
+                    }
+                    ctx.shadowBlur = 0;
+                }
+            }
+            
+            ctx.restore();
+        }
+
+        function drawMonsters() {
+            ctx.save();
+            ctx.translate(canvas.width/2, canvas.height/2);
+            
+            // Monstruo sombra original
+            if(game.monsters.shadow.active && game.monsters.shadow.visible) {
+                drawShadowMonster();
+            }
+            
+            // Wraith (nuevo monstruo)
+            if(game.monsters.wraith.active && game.monsters.wraith.visible) {
+                drawWraithMonster();
+            }
+            
+            ctx.restore();
+        }
+
+        function drawShadowMonster() {
+            const shadow = game.monsters.shadow;
+            const monsterX = shadow.x - game.player.x;
+            const monsterY = shadow.y - game.player.y;
+            
+            // Sombra del monstruo
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            ctx.beginPath();
+            ctx.ellipse(monsterX, monsterY + 20, 30, 10, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cuerpo del monstruo
+            ctx.fillStyle = '#1a1a1a';
+            ctx.beginPath();
+            ctx.ellipse(monsterX, monsterY, 25, 40, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Extremidades distorsionadas
+            for(let i = 0; i < 6; i++) {
+                const angle = (game.time * 0.1) + (i * Math.PI / 3);
+                const armX = monsterX + Math.cos(angle) * 20;
+                const armY = monsterY + Math.sin(angle) * 15;
+                
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(monsterX, monsterY);
+                ctx.lineTo(armX, armY);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(armX, armY, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Ojos brillantes
+            ctx.fillStyle = '#ff4400';
+            ctx.shadowBlur = 5;
+            ctx.shadowColor = '#ff4400';
+            ctx.beginPath();
+            ctx.arc(monsterX - 8, monsterY - 10, 3, 0, Math.PI * 2);
+            ctx.arc(monsterX + 8, monsterY - 10, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // Boca
+            ctx.strokeStyle = '#ff2200';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(monsterX, monsterY, 8, 0, Math.PI);
+            ctx.stroke();
+        }
+
+        function drawWraithMonster() {
+            const wraith = game.monsters.wraith;
+            const wraithX = wraith.x - game.player.x;
+            const wraithY = wraith.y - game.player.y;
+            
+            // Efecto espectral
+            ctx.save();
+            ctx.globalAlpha = 0.8;
+            
+            // Aura fantasmal
+            const gradient = ctx.createRadialGradient(wraithX, wraithY, 0, wraithX, wraithY, 50);
+            gradient.addColorStop(0, 'rgba(100, 0, 200, 0.6)');
+            gradient.addColorStop(1, 'rgba(100, 0, 200, 0)');
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(wraithX, wraithY, 50, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Cuerpo flotante
+            ctx.fillStyle = '#2a0040';
+            ctx.beginPath();
+            ctx.ellipse(wraithX, wraithY - 10, 20, 50, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Tentáculos espectrales
+            for(let i = 0; i < 8; i++) {
+                const angle = (game.time * 0.2) + (i * Math.PI / 4);
+                const length = 30 + Math.sin(game.time * 0.15 + i) * 10;
+                const tentacleX = wraithX + Math.cos(angle) * length;
+                const tentacleY = wraithY + Math.sin(angle) * length;
+                
+                ctx.strokeStyle = `rgba(150, 0, 255, ${0.7 - (length - 20) / 40})`;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(wraithX, wraithY);
+                ctx.quadraticCurveTo(
+                    wraithX + Math.cos(angle) * length * 0.7,
+                    wraithY + Math.sin(angle) * length * 0.7 - 20,
+                    tentacleX,
+                    tentacleY
+                );
+                ctx.stroke();
+            }
+            
+            // Ojos espectrales
+            ctx.fillStyle = '#9900ff';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#9900ff';
+            ctx.beginPath();
+            ctx.arc(wraithX - 6, wraithY - 20, 4, 0, Math.PI * 2);
+            ctx.arc(wraithX + 6, wraithY - 20, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // Boca espectral
+            ctx.strokeStyle = '#ff00ff';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.ellipse(wraithX, wraithY - 5, 8, 4, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.restore();
+        }
+
+        function drawFlashlight() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, 150
+            );
+            gradient.addColorStop(0, 'rgba(255,255,200,0.9)');
+            gradient.addColorStop(0.5, 'rgba(255,255,150,0.5)');
+            gradient.addColorStop(1, 'rgba(255,255,100,0)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Efecto de batería baja
+            if(game.player.battery < 30) {
+                if(Math.random() < 0.1) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+        }
+
+        function drawDarkness() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 30,
+                canvas.width/2, canvas.height/2, 150
+            );
+            gradient.addColorStop(0, 'rgba(0,0,0,0)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0.9)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function drawSanityEffects() {
+            if(Math.random() < 0.15) {
+                ctx.fillStyle = `rgba(${Math.random()*100}, 0, ${Math.random()*50}, 0.15)`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            
+            if(game.player.sanity < 30) {
+                ctx.strokeStyle = 'rgba(255,0,0,0.4)';
+                ctx.lineWidth = 1;
+                for(let i = 0; i < 8; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                    ctx.stroke();
+                }
+            }
+            
+            if(game.player.sanity < 15) {
+                // Alucinaciones
+                ctx.fillStyle = 'rgba(0,0,0,0.8)';
+                for(let i = 0; i < 5; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    ctx.beginPath();
+                    ctx.arc(x, y, Math.random() * 20, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        // Funciones de UI y utilidades
+        function updateUI() {
+            document.getElementById('health').textContent = `❤️ Salud: ${Math.max(0, Math.floor(game.player.health))}`;
+            document.getElementById('sanity').textContent = `🧠 Cordura: ${Math.max(0, Math.floor(game.player.sanity))}`;
+            document.getElementById('battery').textContent = `🔋 Batería: ${Math.max(0, Math.floor(game.player.battery))}`;
+            
+            // Inventario
+            let inventoryText = "📦 Inventario: ";
+            const items = [];
+            if(game.player.inventory.key) items.push("🔑Llave");
+            if(game.player.inventory.keycard) items.push("💳Tarjeta");
+            if(game.player.inventory.medkit > 0) items.push(`🏥Kits(${game.player.inventory.medkit})`);
+            if(game.player.inventory.batteries > 0) items.push(`🔋Baterías(${game.player.inventory.batteries})`);
+            if(game.player.inventory.documents > 0) items.push(`📄Docs(${game.player.inventory.documents})`);
+            
+            inventoryText += items.length > 0 ? items.join(", ") : "Vacío";
+            document.getElementById('inventory').textContent = inventoryText;
+            
+            // Colores dinámicos
+            const healthEl = document.getElementById('health');
+            const sanityEl = document.getElementById('sanity');
+            const batteryEl = document.getElementById('battery');
+            
+            healthEl.style.color = game.player.health > 50 ? '#ff4444' : '#ff0000';
+            sanityEl.style.color = game.player.sanity > 50 ? '#44ff44' : game.player.sanity > 25 ? '#ffff00' : '#ff0000';
+            batteryEl.style.color = game.player.battery > 30 ? '#ffff44' : '#ff8800';
+        }
+
+        function updateObjective(newObjective) {
+            document.getElementById('objective').textContent = `🎯 ${newObjective}`;
+        }
+
+        function showAmbientMessage(message) {
+            const ambientEl = document.getElementById('ambientText');
+            ambientEl.textContent = message;
+            ambientEl.style.opacity = '1';
+            ambientEl.style.color = '#ff6666';
+            setTimeout(() => {
+                ambientEl.style.opacity = '0.3';
+                ambientEl.style.color = '#888';
+            }, 4000);
+        }
+
+        function gameOver() {
+            game.gameOver = true;
+            
+            let deathMessage = "Las criaturas de Blackwood han reclamado otra víctima...";
+            if(game.player.health <= 0) {
+                deathMessage = "Tus heridas fueron demasiado graves para continuar...";
+            } else if(game.player.sanity <= 0) {
+                deathMessage = "La locura te consumió completamente...";
+            }
+            
+            document.getElementById('deathMessage').textContent = deathMessage;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+
+        function victory() {
+            game.victory = true;
+            document.getElementById('victory').style.display = 'block';
+        }
+
+        function togglePause() {
+            // Implementar pausa si es necesario
+        }
+
+        // Loop principal del juego
+        function gameLoop() {
+            update();
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Funciones globales para los botones
+        window.submitPuzzle = submitPuzzle;
+        window.closePuzzle = closePuzzle;
+
+        // Inicializar juego
+        generateFacilityLayout();
+        showAmbientMessage("Has despertado en las Instalaciones Blackwood... encuentra la salida antes de que sea demasiado tarde...");
+        gameLoop();
+
+        // Prevenir menú contextual
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

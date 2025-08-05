@@ -1,0 +1,181 @@
+# ASCENSIÓN SOMBRÍA
+## Concepto de Juego de Terror en Primera Persona
+
+---
+
+## 1. SINOPSIS DETALLADA
+
+**Título:** Ascensión Sombría
+**Género:** Terror psicológico en primera persona con elementos de supervivencia
+**Clasificación:** M (Maduro 17+)
+
+### Historia
+El jugador encarna a Alex Morrison, un investigador paranormal que llega al Edificio Residencial Kovalenko tras recibir informes de desapariciones misteriosas. Lo que comenzó como una investigación rutinaria se convierte en una pesadilla cuando la puerta principal se sella mágicamente tras su entrada, y las escaleras principales colapsan misteriosamente.
+
+Atrapado en la planta baja, Alex descubre que el edificio fue sede de experimentos psíquicos clandestinos en los años 80. Los residentes fueron utilizados como sujetos de prueba, y sus almas torturadas ahora habitan el edificio como entidades grotescas. La única escapatoria es ascender planta por planta, pero cada nivel está protegido por una cerradura que requiere una llave específica custodiada por las abominaciones que una vez fueron humanos.
+
+### Mecánicas Centrales
+
+**Progresión Vertical:** El jugador debe completar cada planta para acceder a la siguiente, creando una sensación claustrofóbica de ascensión forzada hacia lo desconocido.
+
+**Sistema de Terror Dinámico:** El miedo se construye a través de:
+- Sonidos ambientales procedurales que cambian según las acciones del jugador
+- Sistema de "cordura" que afecta la percepción visual (alucinaciones, distorsiones)
+- Encuentros aleatorios que mantienen la tensión constante
+
+**Recursos Críticos:**
+- **Baterías:** Limitadas y esenciales para la linterna
+- **Munición:** Extremadamente escasa, forzando decisiones tácticas
+- **Medicinas:** Para curar heridas y restaurar cordura
+- **Llaves maestras:** Objetos únicos que desbloquean áreas especiales
+
+---
+
+## 2. PRIMER NIVEL - PLANTA BAJA: "EL DESPERTAR"
+
+### Entorno
+La planta baja del Edificio Kovalenko es un laberinto de pasillos interconectados que rodean un patio central colapsado. El área incluye:
+
+**Vestíbulo Principal:**
+- Mármol agrietado cubierto de moho negro
+- Buzones oxidados con nombres apenas legibles
+- Un ascensor sin energía con puertas entreabiertas que revelan un pozo negro
+- Graffiti en ruso que se traduce como "No subas" y "Ellos están esperando"
+
+**Apartamentos Abandonados (4 unidades):**
+- Apt. 1A: Cocina con platos sucios fosilizados, refrigerador lleno de carne podrida
+- Apt. 1B: Sala de estar con televisor encendido mostrando estática (sin fuente de energía)
+- Apt. 1C: Dormitorio infantil con juguetes que se mueven solos
+- Apt. 1D: Estudio con paredes cubiertas de ecuaciones y diagramas psíquicos
+
+**Pasillo Central:**
+- Luces fluorescentes que parpadean creando sombras danzantes
+- Charcos de agua que gotean del techo (sin lluvia exterior)
+- Sonido constante de pasos en el piso superior, aunque no hay nadie visible
+
+### El Monstruo: "El Conserje"
+**Descripción Física:** Una figura humanoide de 2.5 metros de altura, vestida con un overol azul descolorido. Su rostro está completamente ausente, reemplazado por una superficie lisa de carne. Sus brazos son desproporcionadamente largos, terminando en manos con dedos como raíces que se extienden hasta el suelo. Arrastra una llave maestra gigante como arma.
+
+**Comportamiento:**
+- Patrulla los pasillos siguiendo una ruta predecible pero lenta
+- Se detiene en cada puerta, "escuchando" durante 10-15 segundos
+- Reacciona violentamente a la luz directa de la linterna
+- Emite un sonido de llaves tintineando antes de atacar
+- Si pierde al jugador, regresa a inspeccionar el último lugar donde detectó ruido
+
+**Mecánica de Encuentro:**
+El jugador debe seguir al Conserje silenciosamente hasta que entre al Apartamento 1D. Dentro, debe resolver un puzzle de ecuaciones para activar un dispositivo que temporalmente paraliza a la criatura, permitiendo recuperar la Llave del Primer Piso de su cinturón.
+
+### Ubicación de la Llave
+La **Llave del Primer Piso** cuelga del cinturón del Conserje. Para obtenerla, el jugador debe:
+1. Encontrar el diario del Dr. Petrov en el Apartamento 1D
+2. Resolver la ecuación psíquica: "Frecuencia de paralización neural = 432 Hz"
+3. Activar el dispositivo emisor de frecuencias en el estudio
+4. Acercarse al Conserje paralizado y tomar la llave (30 segundos antes de que se recupere)
+
+---
+
+## 3. TIPOS DE MONSTRUOS - PRIMERAS TRES PLANTAS
+
+### PLANTA BAJA - "El Conserje"
+**Nombre:** Дворник (Dvornik - Conserje en ruso)
+**Origen:** Viktor Petrov, conserje del edificio, primer sujeto de experimentación
+**Habilidades:**
+- **Patrullaje Metódico:** Sigue rutas predictibles pero mortales
+- **Hipersensibilidad Auditiva:** Detecta pasos desde 15 metros
+- **Fuerza Bruta:** Un golpe de su llave causa 75% de daño
+- **Inmunidad Parcial:** Resistente a 2-3 disparos, vulnerable a frecuencias específicas
+
+### PRIMER PISO - "Los Gemelos Susurrantes"
+**Nombre:** Близнецы (Bliznetsy - Los Gemelos)
+**Origen:** Hermanos gemelos de 8 años, Anna y Dmitri Kozlov, unidos telepáticamente por los experimentos
+**Descripción:** Dos figuras infantiles unidas por una masa de carne pulsante. Comparten cuatro brazos y sus rostros están fusionados por la frente. Se comunican mediante susurros simultáneos en idiomas diferentes.
+**Habilidades:**
+- **Teletransportación Coordinada:** Aparecen en puntos opuestos para flanquear
+- **Ilusiones Auditivas:** Crean voces de familiares del jugador para atraerlo
+- **Vulnerabilidad Compartida:** Dañar a uno afecta al otro, pero solo pueden morir juntos
+- **Llanto Paralizante:** Su llanto conjunto causa parálisis temporal (3 segundos)
+
+### SEGUNDO PISO - "La Madre Anidadora"
+**Nombre:** Гнездо (Gnezdo - El Nido)
+**Origen:** Elena Volkov, madre de familia que protegía a sus tres hijos durante los experimentos
+**Descripción:** Una masa grotesca de carne maternal con múltiples extremidades que terminan en manos protectoras. Su torso se abre como una flor carnívora, revelando a tres figuras infantiles medio formadas que emergen y se retraen constantemente. Sus "hijos" actúan como extensiones de su voluntad.
+**Habilidades:**
+- **Invocación de Descendencia:** Crea hasta 6 "bebés sombra" que atacan en enjambre
+- **Regeneración Maternal:** Se cura cuando sus "hijos" tocan cadáveres
+- **Grito Protector:** Emite ondas sónicas que causan desorientación y sangrado auditivo
+- **Hibernación Defensiva:** Se encierra en un capullo cuando recibe mucho daño, volviéndose inmune pero inmóvil por 45 segundos
+
+---
+
+## 4. HUD E INTERFAZ DE USUARIO
+
+### Diseño Minimalista Inmersivo
+El HUD está diseñado para ser lo menos intrusivo posible, manteniendo la inmersión del terror psicológico.
+
+### Elementos del HUD
+
+**1. Indicador de Salud (Esquina Inferior Izquierda)**
+- **Diseño:** Pulso cardiográfico rojo que late según la salud actual
+- **Estados:**
+  - Verde: 80-100% (pulso lento y estable)
+  - Amarillo: 50-79% (pulso moderado con ocasionales irregularidades)
+  - Rojo: 25-49% (pulso rápido y errático)
+  - Crítico: 1-24% (pulso muy débil, pantalla con bordes rojos pulsantes)
+
+**2. Indicador de Cordura (Esquina Superior Central)**
+- **Diseño:** Pequeño símbolo de ojo que cambia según el estado mental
+- **Estados:**
+  - Ojo abierto (blanco): Cordura alta
+  - Ojo entreabierto (amarillo): Cordura media (alucinaciones leves)
+  - Ojo cerrado (rojo): Cordura baja (alucinaciones severas, distorsión visual)
+  - Ojo sangrante: Cordura crítica (falsas percepciones, controles invertidos)
+
+**3. Contador de Munición (Esquina Inferior Derecha)**
+- **Diseño:** Solo aparece cuando se empuña un arma
+- **Formato:** Balas en cargador / Balas totales (ej: 3/17)
+- **Color:** Blanco normal, rojo cuando quedan menos de 3 balas en el cargador
+
+**4. Indicador de Batería de Linterna (Lado Izquierdo de la Pantalla)**
+- **Diseño:** Icono de batería vertical que se vacía gradualmente
+- **Estados:**
+  - Verde: 60-100%
+  - Amarillo: 30-59% (luz más débil)
+  - Rojo: 10-29% (luz parpadeante)
+  - Crítico: 1-9% (luz muy débil y errática)
+
+**5. Objetivo Actual (Esquina Superior Izquierda)**
+- **Diseño:** Texto pequeño y translúcido que aparece solo cuando es relevante
+- **Ejemplos:**
+  - "Encontrar la llave del primer piso"
+  - "Resolver la ecuación del Dr. Petrov"
+  - "Escapar del Conserje"
+
+### Elementos Contextuales Especiales
+
+**Indicador de Ruido:**
+- Ondas sonoras visuales que aparecen cerca de los pies cuando el jugador hace demasiado ruido
+- Se intensifican con el volumen del ruido producido
+
+**Detector de Proximidad de Enemigos:**
+- El controlador vibra suavemente cuando hay enemigos cerca
+- La vibración se intensifica según la proximidad
+
+**Sistema de Interacción:**
+- Contorno blanco sutil alrededor de objetos interactuables
+- Texto contextual mínimo ("Examinar", "Tomar", "Usar")
+
+### Efectos Visuales del HUD Durante el Terror
+
+**Cuando el nivel de cordura es bajo:**
+- Los elementos del HUD pueden "glitchear" o mostrar información falsa
+- Números de munición pueden mostrar valores incorrectos
+- El indicador de salud puede parpadear entre diferentes estados
+- Aparecen elementos de HUD falsos (como un compás que apunta a enemigos inexistentes)
+
+**Durante encuentros con monstruos:**
+- Ligero efecto de interferencia estática en todos los elementos
+- Los bordes de la pantalla se oscurecen progresivamente
+- El indicador de cordura puede "sangrar" digitalmente
+
+Este diseño de interfaz refuerza la atmósfera de terror al ser funcional pero inquietante, recordando constantemente al jugador su vulnerabilidad sin romper la inmersión del horror psicológico.

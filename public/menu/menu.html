@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menú Principal - XP Quest</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Tahoma, sans-serif;
+      background-image: url('../assets/background_menu.png');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Escritorio con columnas automáticas */
+    .desktop {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      height: calc(100vh - 60px);
+      width: 100%;
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(auto-fill, minmax(100px, auto));
+      gap: 30px 60px;
+      overflow: hidden;
+    }
+
+    .icon {
+      width: 80px;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .icon:hover {
+      transform: scale(1.1);
+      filter: brightness(1.2);
+    }
+
+    .icon img {
+      width: 64px;
+      height: 64px;
+      display: block;
+      margin: 0 auto 5px;
+    }
+
+    .icon-label {
+      font-size: 13px;
+      text-shadow: 1px 1px 1px #000;
+      user-select: none;
+    }
+
+    /* Barra de tareas estilo XP */
+    .taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background-color: #316AC5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-top: 2px solid #1e3f7f;
+    }
+
+    .start-button {
+      background-color: #e0e0e0;
+      color: black;
+      border: 2px outset #ffffff;
+      font-size: 14px;
+      padding: 2px 10px;
+      cursor: default;
+    }
+
+    .clock {
+      color: white;
+      font-size: 14px;
+      text-shadow: 1px 1px 1px #000;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Escritorio con íconos distribuidos en columnas -->
+  <div class="desktop">
+    <!-- <div class="icon" onclick="window.location.href='../room1/room1.html'"> -->
+    <div class="icon" onclick="window.location.href='../room/index.html'">
+      <img src="../assets/sword_icon.png" alt="Iniciar Batalla" />
+      <div class="icon-label">Iniciar Batalla</div>
+    </div>
+
+    <div class="icon" onclick="window.location.href='perfil.html'">
+      <img src="../assets/user_icon.png" alt="Perfil" />
+      <div class="icon-label">Perfil</div>
+    </div>
+
+    <div class="icon" onclick="window.location.href='inventario.html'">
+      <img src="../assets/bag_icon.png" alt="Inventario" />
+      <div class="icon-label">Inventario</div>
+    </div>
+
+    <div class="icon" onclick="window.location.href='configuracion.html'">
+      <img src="../assets/settings_icon.png" alt="Configuración" />
+      <div class="icon-label">Configuración</div>
+    </div>
+
+    <div class="icon" onclick="window.location.href='../apagando.html'">
+      <img src="../assets/exit_icon.png" alt="Salir" />
+      <div class="icon-label">Salir</div>
+    </div>
+
+    <div class="icon" onclick="alert('La papelera está vacía')">
+      <img src="../assets/papelera.png" alt="Papelera" />
+      <div class="icon-label">Papelera</div>
+    </div>
+  </div>
+
+  <!-- Barra de tareas inferior -->
+  <div class="taskbar">
+    <div class="start-button">Inicio</div>
+    <div class="clock" id="reloj">--:--:--</div>
+  </div>
+
+
+  <!-- Menú tipo Inicio XP -->
+<div id="start-menu" style="
+  display: none;
+  position: absolute;
+  bottom: 35px;
+  left: 10px;
+  width: 200px;
+  background-color: #C0C0C0;
+  border: 2px solid #000080;
+  box-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+  font-family: Tahoma, sans-serif;
+  z-index: 999;
+">
+  <div style="background-color: #000080; color: white; padding: 5px 10px; font-weight: bold;">
+    XP Quest
+  </div>
+  <!-- <div onclick="window.location.href='../room1/room1.html'" style="padding: 8px 10px; cursor: pointer;" onmouseover="this.style.background='#99ccff'" onmouseout="this.style.background='transparent'"> -->
+  <div onclick='window.location.href="http://localhost:8080/"' style="padding: 8px 10px; cursor: pointer;" onmouseover="this.style.background='#99ccff'" onmouseout="this.style.background='transparent'">
+    🗡️ Iniciar Batalla
+  </div>
+  <div onclick="window.location.href='perfil.html'" style="padding: 8px 10px; cursor: pointer;" onmouseover="this.style.background='#99ccff'" onmouseout="this.style.background='transparent'">
+    👤 Perfil
+  </div>
+  <div onclick="window.location.href='inventario.html'" style="padding: 8px 10px; cursor: pointer;" onmouseover="this.style.background='#99ccff'" onmouseout="this.style.background='transparent'">
+    🎒 Inventario
+  </div>
+  <div onclick="window.location.href='configuracion.html'" style="padding: 8px 10px; cursor: pointer;" onmouseover="this.style.background='#99ccff'" onmouseout="this.style.background='transparent'">
+    ⚙️ Configuración
+  </div>
+  <div onclick="window.location.href='../apagando.html'" style="padding: 8px 10px; cursor: pointer; color: red;" onmouseover="this.style.background='#ffcccc'" onmouseout="this.style.background='transparent'">
+    🚪 Salir
+  </div>
+</div>
+
+
+  <script>
+    function actualizarReloj() {
+      const reloj = document.getElementById("reloj");
+      const ahora = new Date();
+      reloj.textContent = ahora.toLocaleTimeString();
+    }
+    setInterval(actualizarReloj, 1000);
+    actualizarReloj();
+
+    // Menú de Inicio
+const startButton = document.querySelector(".start-button");
+const startMenu = document.getElementById("start-menu");
+
+startButton.addEventListener("click", () => {
+  startMenu.style.display = (startMenu.style.display === "none") ? "block" : "none";
+});
+
+// Ocultar el menú si haces clic fuera
+document.addEventListener("click", (e) => {
+  if (!startButton.contains(e.target) && !startMenu.contains(e.target)) {
+    startMenu.style.display = "none";
+  }
+});
+
+  </script>
+
+</body>
+</html>
