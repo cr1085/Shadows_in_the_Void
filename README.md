@@ -39,8 +39,8 @@ Creado por **3CB Soluciones y Inyoxz.studios** como parte de un proyecto indepen
 ##  Imágenes del juego
 
 ![Inicio del juego](public/screenshots/screenshots06.png)
-![Inicio del juego](/server/screenshots/screenshots05.png.png)
-![Inicio del juego](/server/screenshots/screenshots04.png.png)
-![Inicio del juego](../server/screenshots/screenshots03.png.png)
+![Inicio del juego](public/screenshots/screenshots05.png)
+![Inicio del juego](public/screenshots/screenshots04.png)
+![Inicio del juego](public/screenshots/screenshots03.png)
 ![Puzzle de seguridad](../server/screenshots/screenshots01.png)
 ![Encuentro paranormal](../server/screenshots/screenshots07.png)
