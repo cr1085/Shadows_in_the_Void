@@ -1,4 +1,4 @@
-# 🕯️ Shadows in the Void
+#  Shadows in the Void
 
 **"Shadows in the Void"** es un juego de terror psicológico en primera persona, ambientado en las siniestras y abandonadas instalaciones de investigación **Blackwood Corp**. Tu misión es simple: *sobrevivir... y escapar*.
 
@@ -6,7 +6,7 @@ Creado por **3CB Soluciones** como parte de un proyecto independiente de alto im
 
 ---
 
-## 🎮 Características
+##  Características
 
 - Exploración libre con controles tipo FPS
 - Gestión de salud, cordura y batería de linterna
@@ -16,14 +16,14 @@ Creado por **3CB Soluciones** como parte de un proyecto independiente de alto im
 
 ---
 
-## 🧪 Historia
+##  Historia
 
 > Has despertado solo en las instalaciones de Blackwood. Las luces parpadean. Los pasillos cambian. Algo está contigo.  
 > Encuentra la llave, desactiva el sistema de seguridad, y sal antes de que la oscuridad te consuma...
 
 ---
 
-## 🕹️ Controles
+##  Controles
 
 | Tecla / Acción | Función |
 |----------------|---------|
@@ -36,7 +36,7 @@ Creado por **3CB Soluciones** como parte de un proyecto independiente de alto im
 
 ---
 
-## 📸 Imágenes del juego
+##  Imágenes del juego
 
 Agrega aquí tus capturas de pantalla en la carpeta `/screenshots` y enlázalas así:
 
