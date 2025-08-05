@@ -70,4 +70,4 @@ This project is **not open source**.
 The code, design, mechanics and all content in "Shadows in the Void" are the intellectual property of **3CB Soluciones & Inyoxz.studios**.  
 Unauthorized copying, modification or commercial use is strictly prohibited.
 
-For permissions or collaborations, contact: [tucorreo@dominio.com]
+For permissions or collaborations, contact: [3cbsoluciones@gmail.com]
