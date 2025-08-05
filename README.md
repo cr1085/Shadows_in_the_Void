@@ -1,38 +1,44 @@
-#  Shadows in the Void
+# 🕯️ Shadows in the Void
 
-**"Shadows in the Void"** es un juego de terror psicológico en primera persona, ambientado en las siniestras y abandonadas instalaciones de investigación **Blackwood Corp**. Tu misión es simple: *sobrevivir... y escapar*.
+**"Shadows in the Void"** is a first-person psychological horror game set in the sinister, abandoned research facility of **Blackwood Corp**. Your mission is simple: *survive... and escape*.
 
-Creado por **3CB Soluciones y Inyoxz.studios** como parte de un proyecto independiente de alto impacto narrativo y técnico.
+<img src="public/assets/3cb.png" alt="Game start" width="200"/>
+<img src="public/assets/socio.png" alt="Security puzzle" width="200"/>
 
----
 
-##  Características
 
-- Exploración libre con controles tipo FPS
-- Gestión de salud, cordura y batería de linterna
-- Sistema de monstruos con IA reactiva y mecánicas de miedo psicológico
-- Puzzles interactivos y objetos clave para avanzar
-- Ambientación envolvente con mensajes dinámicos y sonidos paranormales
+Created by **3CB Soluciones and Inyoxz.studios** as part of an independent project with strong narrative and technical focus.
 
 ---
 
-##  Historia
+## 🎮 Features
 
-> Has despertado solo en las instalaciones de Blackwood. Las luces parpadean. Los pasillos cambian. Algo está contigo.  
-> Encuentra la llave, desactiva el sistema de seguridad, y sal antes de que la oscuridad te consuma...
+- Free exploration with FPS-style controls
+- Management of health, sanity, and flashlight battery
+- Reactive AI-based monster system with psychological horror mechanics
+- Interactive puzzles and key items to progress
+- Immersive atmosphere with dynamic messages and paranormal sound effects
 
 ---
 
-##  Controles
+## 🧪 Story
 
-| Tecla / Acción | Función |
-|----------------|---------|
-| `WASD`         | Moverse |
-| `Mouse`        | Mirar alrededor |
-| `Click`        | Activar/desactivar linterna |
-| `E`            | Interactuar con objetos |
-| `R`            | Correr |
-| `ESC`          | Pausar (próximamente) |
+> You've awakened alone in the Blackwood facility. The lights flicker. The hallways shift. Something is with you.  
+> Find the key, disable the security system, and escape before the darkness consumes you...
+
+---
+
+## 🕹️ Controls
+
+| Key / Action | Function |
+|--------------|----------|
+| `WASD`       | Move     |
+| `Mouse`      | Look around |
+| `Click`      | Toggle flashlight |
+| `E`          | Interact with objects |
+| `R`          | Run      |
+| `ESC`        | Pause (coming soon) |
+
 
 ---
 
