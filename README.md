@@ -59,3 +59,15 @@ Created by **3CB Soluciones and Inyoxz.studios** as part of an independent proje
 
 > ⚠️ This project is protected. Any unauthorized use of the code or assets is strictly prohibited.
 > Contact 3CB Soluciones for permissions or licensing options.
+
+
+---
+
+## ⚠️ License and Usage
+
+This project is **not open source**.
+
+The code, design, mechanics and all content in "Shadows in the Void" are the intellectual property of **3CB Soluciones & Inyoxz.studios**.  
+Unauthorized copying, modification or commercial use is strictly prohibited.
+
+For permissions or collaborations, contact: [tucorreo@dominio.com]
