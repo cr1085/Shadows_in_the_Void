@@ -8,12 +8,18 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-    "ws": "^8.14.2"
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["websocket", "game", "multiplayer"],
+  "keywords": [
+    "websocket",
+    "game",
+    "multiplayer"
+  ],
   "author": "Tu Nombre",
   "license": "MIT"
 }

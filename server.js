@@ -1,22 +1,127 @@
-// server.js - Servidor WebSocket para Terror Room Escape
+const express = require('express');
 const WebSocket = require('ws');
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 class TerrorGameServer {
     constructor(port = 8080) {
         this.port = port;
         this.players = new Map();
         this.enemies = new Map();
+        
+        // Configuración del sistema de autenticación
+        this.usersFilePath = path.join(__dirname, 'data', 'users.json');
         this.setupServer();
     }
 
+    // Métodos para el sistema de autenticación
+    readUsers() {
+        try {
+            // Crear directorio data si no existe
+            if (!fs.existsSync(path.dirname(this.usersFilePath))) {
+                fs.mkdirSync(path.dirname(this.usersFilePath));
+            }
+            
+            // Crear archivo users.json si no existe
+            if (!fs.existsSync(this.usersFilePath)) {
+                fs.writeFileSync(this.usersFilePath, '[]', 'utf8');
+                return [];
+            }
+            
+            const data = fs.readFileSync(this.usersFilePath, 'utf8');
+            return JSON.parse(data);
+        } catch (err) {
+            console.error('Error leyendo usuarios:', err);
+            return [];
+        }
+    }
+
+    writeUsers(users) {
+        fs.writeFileSync(this.usersFilePath, JSON.stringify(users, null, 2), 'utf8');
+    }
+
+    hashPassword(password) {
+        return crypto.createHash('sha256').update(password).digest('hex');
+    }
+
     setupServer() {
-        // Crear servidor HTTP
-        const server = http.createServer((req, res) => {
-            this.handleHttpRequest(req, res);
+        const app = express();
+        
+        // Middlewares
+        app.use(express.static('public'));
+        app.use(bodyParser.urlencoded({ extended: false }));
+        app.use(bodyParser.json());
+
+        // Rutas de autenticación
+        app.post('/api/register', (req, res) => {
+            const { username, email, password } = req.body;
+            const users = this.readUsers();
+
+            if (!username || !email || !password) {
+                return res.status(400).json({ error: 'Todos los campos son requeridos' });
+            }
+
+            if (users.some(user => user.username === username)) {
+                return res.status(400).json({ error: 'El usuario ya existe' });
+            }
+
+            if (users.some(user => user.email === email)) {
+                return res.status(400).json({ error: 'El email ya está registrado' });
+            }
+
+            const newUser = {
+                id: Date.now().toString(),
+                username,
+                email,
+                password: this.hashPassword(password),
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            this.writeUsers(users);
+
+            res.json({ success: true, message: 'Registro exitoso' });
         });
+
+        app.post('/api/login', (req, res) => {
+            const { username, password } = req.body;
+            const users = this.readUsers();
+
+            const user = users.find(u => u.username === username && u.password === this.hashPassword(password));
+
+            if (!user) {
+                return res.status(401).json({ error: 'Credenciales inválidas' });
+            }
+
+            res.json({ 
+                success: true, 
+                message: 'Login exitoso', 
+                user: { 
+                    id: user.id,
+                    username: user.username,
+                    email: user.email
+                } 
+            });
+        });
+
+        // Rutas para páginas de autenticación
+        app.get('/login', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'auth', 'login.html'));
+        });
+
+        app.get('/register', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'auth', 'register.html'));
+        });
+
+        app.get('/welcome', (req, res) => {
+            res.sendFile(path.join(__dirname, 'public', 'auth', 'welcome.html'));
+        });
+
+        // Crear servidor HTTP
+        const server = http.createServer(app);
 
         // Crear servidor WebSocket
         this.wss = new WebSocket.Server({ server });
@@ -26,14 +131,22 @@ class TerrorGameServer {
             this.handleConnection(ws, req);
         });
 
+        // Manejar rutas no encontradas
+        app.use((req, res) => {
+            this.handleHttpRequest(req, res);
+        });
+
         server.listen(this.port, () => {
             console.log(`🚀 Servidor Terror Room iniciado`);
             console.log(`🌐 URL: http://localhost:${this.port}`);
             console.log(`🔗 WebSocket: ws://localhost:${this.port}`);
+            console.log(`🔐 Sistema de autenticación activo`);
             console.log(`📊 Para ver estadísticas presiona Ctrl+C`);
         });
     }
 
+    // Resto de los métodos existentes (handleHttpRequest, handleConnection, etc.)
+    // ... (mantén todo el resto del código igual hasta el final)
     handleHttpRequest(req, res) {
         let filePath = req.url === '/' ? '/index.html' : req.url;
         
@@ -314,6 +427,8 @@ class TerrorGameServer {
             rooms: rooms
         };
     }
+
+
 }
 
 // Iniciar servidor

@@ -4,186 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shadows in the Void - Enhanced</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-            cursor: none;
-        }
-
-        #gameCanvas {
-            display: block;
-            background: linear-gradient(to bottom, #1a1a0f, #2d2d1f);
-        }
-
-        .ui {
-            position: absolute;
-            color: #fff;
-            font-size: 14px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        #health {
-            top: 20px;
-            left: 20px;
-            color: #ff4444;
-        }
-
-        #sanity {
-            top: 50px;
-            left: 20px;
-            color: #44ff44;
-        }
-
-        #battery {
-            top: 80px;
-            left: 20px;
-            color: #ffff44;
-        }
-
-        #inventory {
-            top: 110px;
-            left: 20px;
-            font-size: 12px;
-            color: #cccccc;
-        }
-
-        #objective {
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            color: #44ffff;
-            font-size: 16px;
-            background: rgba(0,0,0,0.5);
-            padding: 5px 15px;
-            border-radius: 5px;
-        }
-
-        #instructions {
-            top: 20px;
-            right: 20px;
-            text-align: right;
-            font-size: 12px;
-        }
-
-        #gameOver {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #ff0000;
-            font-size: 24px;
-            display: none;
-            background: rgba(0,0,0,0.9);
-            padding: 30px;
-            border-radius: 10px;
-            border: 2px solid #ff0000;
-        }
-
-        #victory {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #00ff00;
-            font-size: 24px;
-            display: none;
-            background: rgba(0,0,0,0.9);
-            padding: 30px;
-            border-radius: 10px;
-            border: 2px solid #00ff00;
-        }
-
-        .crosshair {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 4px;
-            height: 4px;
-            background: #fff;
-            border-radius: 50%;
-            z-index: 100;
-        }
-
-        #ambientText {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #888;
-            font-style: italic;
-            text-align: center;
-        }
-
-        #puzzle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9);
-            color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            border: 2px solid #ffff00;
-            display: none;
-            text-align: center;
-            max-width: 400px;
-        }
-
-        #puzzleInput {
-            margin: 10px;
-            padding: 5px;
-            font-size: 16px;
-            background: #333;
-            color: #fff;
-            border: 1px solid #666;
-            text-align: center;
-        }
-
-        .button {
-            background: #444;
-            color: #fff;
-            border: 1px solid #666;
-            padding: 8px 16px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .button:hover {
-            background: #555;
-        }
-
-        #interactPrompt {
-            position: absolute;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #ffff00;
-            font-size: 16px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 5px;
-            display: none;
-        }
-    </style>
+     <link rel="stylesheet" href="../css/stylegame.css">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <div class="crosshair"></div>
     
-    <div class="ui" id="health">❤️ Salud: 100</div>
-    <div class="ui" id="sanity">🧠 Cordura: 150</div>
-    <div class="ui" id="battery">🔋 Batería: 100</div>
-    <div class="ui" id="inventory">📦 Inventario: Vacío</div>
-    <div class="ui" id="objective">🎯 Encuentra la llave y escapa</div>
+    <div class="ui" id="health">Salud: 100</div>
+    <div class="ui" id="sanity">Cordura: 150</div>
+    <div class="ui" id="battery">Batería: 100</div>
+    <div class="ui" id="inventory">Inventario: Vacío</div>
+    <div class="ui" id="objective">Encuentra la llave y escapa</div>
     
     <div class="ui" id="instructions">
         WASD: Mover<br>
@@ -194,7 +26,8 @@
         ESC: Pausar
     </div>
     
-    <div id="ambientText">Has despertado en las Instalaciones Blackwood... algo salió terriblemente mal...</div>
+    <!-- <div id="ambientText">Has despertado en las Instalaciones Blackwood... algo salió terriblemente mal...</div> -->
+    <div id="ambientText">El último recuerdo: el grito del Dr. Mendoza cuando activó el Protocolo Éter. Despertaste solo, con el olor a quemado de los circuitos y ese zumbido agudo que no cesa...</div>
     
     <div id="interactPrompt">Presiona E para interactuar</div>
     

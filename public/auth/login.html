@@ -3,73 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>Iniciar Sesión - WinClassic</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at center, #111, #000);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-box {
-      background-color: #1e1e1e;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 25px rgba(255, 0, 0, 0.4);
-      width: 300px;
-      text-align: center;
-    }
-
-    h2 {
-      margin-bottom: 20px;
-      color: #ff4444;
-    }
-
-    input[type="text"], input[type="password"] {
-      width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      background-color: #333;
-      color: white;
-    }
-
-    button {
-      background-color: #ff4444;
-      color: white;
-      padding: 10px 25px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    a {
-      display: block;
-      margin-top: 10px;
-      color: #aaa;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    a:hover {
-      color: white;
-    }
-  </style>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div class="login-box">
     <h2>Iniciar Sesión</h2>
-    <input type="text" placeholder="Usuario o Email" />
-    <input type="password" placeholder="Contraseña" />
-    <!-- <button onclick="window.location.href='../menu/menu.html'">Entrar</button> -->
-    <button onclick="window.location.href='../welcome/bienvenido.html'">Entrar</button>
+    <form id="loginForm">
+      <input type="text" name="username" placeholder="Usuario" required />
+      <input type="password" name="password" placeholder="Contraseña" required />
+      <button type="submit">Entrar</button>
+    </form>
     <a href="register.html">¿No tienes cuenta? Regístrate</a>
+    <div id="message" class="message"></div>
   </div>
+  <script src="/js/auth.js"></script>
 </body>
 </html>
