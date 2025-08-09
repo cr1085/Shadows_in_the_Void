@@ -7,9 +7,87 @@
     <title>Shadows in the Void - Enhanced</title>
     <link rel="stylesheet" href="../css/stylegame.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
+
+    #difficulty-screen {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: radial-gradient(circle, rgba(30,0,0,0.95) 0%, rgba(0,0,0,1) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        color: red;
+        font-family: 'Creepster', cursive;
+        font-size: 2em;
+        animation: flicker 3s infinite;
+        text-align: center;
+    }
+
+    @keyframes flicker {
+        0%, 19.999%, 22%, 62.999%, 64%, 100% { opacity: 1; }
+        20%, 21.999%, 63%, 63.999% { opacity: 0.4; }
+    }
+
+    #difficulty {
+        font-size: 1.2em;
+        padding: 10px;
+        background: black;
+        color: red;
+        border: 2px solid red;
+        font-family: 'Creepster', cursive;
+        margin-top: 10px;
+    }
+
+    #start-game {
+        margin-top: 20px;
+        font-size: 1.2em;
+        padding: 10px 20px;
+        background: darkred;
+        border: none;
+        color: white;
+        font-family: 'Creepster', cursive;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #start-game:hover {
+        transform: scale(1.1);
+        background: crimson;
+    }
+</style>
+
+<!-- <div id="difficulty-screen">
+    <p>Bienvenido...<br>Elige tu destino</p>
+    <select id="difficulty">
+        <option value="easy">😌 Fácil</option>
+        <option value="medium" selected>😈 Medio</option>
+        <option value="hard">💀 Locura</option>
+    </select>
+    <button id="start-game">Comenzar</button>
+</div> -->
+
+
 </head>
 
 <body>
+
+    <div id="difficulty-screen">
+    <p>Selecciona la dificultad</p>
+    <select id="difficulty" style="font-size: 1.2em; padding: 10px; margin-top: 10px;">
+        <option value="easy">Fácil</option>
+        <option value="medium" selected>Medio</option>
+        <option value="hard">Locura</option>
+    </select>
+    <button id="start-game" style="margin-top: 20px; font-size: 1.2em; padding: 10px 20px;">
+        Comenzar
+    </button>
+</div>
+
+
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <div class="crosshair"></div>
 
@@ -57,6 +135,55 @@
     </div>
 
     <script>
+
+      const difficultySettings = {
+    easy: {
+        enemySpeed: 1.5,
+        puzzlePiecesNeeded: 3,
+        enemySpawnDelay: 15000,
+        flashlightDrainRate: 0.02
+    },
+    medium: {
+        enemySpeed: 2.5,
+        puzzlePiecesNeeded: 4,
+        enemySpawnDelay: 8000,
+        flashlightDrainRate: 0.04
+    },
+    hard: {
+        enemySpeed: 4,
+        puzzlePiecesNeeded: 6,
+        enemySpawnDelay: 3000,
+        flashlightDrainRate: 0.06
+    }
+};
+
+let currentDifficulty = "medium";
+
+function applyDifficultySettings() {
+    const settings = difficultySettings[currentDifficulty];
+    game.enemySpeed = settings.enemySpeed;
+    game.puzzlePiecesNeeded = settings.puzzlePiecesNeeded;
+    game.enemySpawnDelay = settings.enemySpawnDelay;
+    game.flashlightDrainRate = settings.flashlightDrainRate;
+}
+
+
+document.getElementById("start-game").addEventListener("click", () => {
+    // Guardamos la dificultad seleccionada (la aplicaremos dentro de startGame cuando game exista)
+    currentDifficulty = document.getElementById("difficulty").value;
+
+    // Ocultar pantalla de selección
+    document.getElementById("difficulty-screen").style.display = "none";
+
+    // Iniciar juego (dentro de startGame aplicamos la dificultad al objeto game)
+    startGame();
+});
+
+
+
+        // ===========================================================
+function startGame(){
+    
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -144,6 +271,17 @@
                 "Ya no recuerdas cómo llegaste aquí..."
             ]
         };
+// ---- aplicar dificultad al objeto game (una vez creado) ----
+(function applyPendingDifficulty() {
+    const s = difficultySettings[currentDifficulty] || difficultySettings['medium'];
+    // Ajustar velocidades de monstruos
+    if (game.monsters && game.monsters.shadow) game.monsters.shadow.speed = s.enemySpeed;
+    if (game.monsters && game.monsters.wraith) game.monsters.wraith.speed = s.enemySpeed * 1.3;
+    // Guardar tasa de consumo de linterna para usarla en updateResourceDegradation
+    game.flashlightDrainRate = s.flashlightDrainRate;
+    // Guardar número de piezas requerido (si lo implementas más adelante)
+    game.puzzlePiecesNeeded = s.puzzlePiecesNeeded;
+})();
 
         // Generar layout de instalaciones
         function generateFacilityLayout() {
@@ -545,7 +683,8 @@
 
         function updateResourceDegradation() {
             if (game.player.flashlight && game.player.battery > 0) {
-                game.player.battery -= 0.2;
+                // game.player.battery -= 0.2;
+                game.player.battery -= (game.flashlightDrainRate !== undefined ? game.flashlightDrainRate : 0.2);
                 if (game.player.battery <= 0) {
                     game.player.flashlight = false;
                     showAmbientMessage("¡Tu linterna se quedó sin batería!");
@@ -1175,12 +1314,13 @@
             }
         }
         placePlayerInFreeSpot();
-        
+
         showAmbientMessage("Has despertado en las Instalaciones Blackwood... encuentra la salida antes de que sea demasiado tarde...");
         gameLoop();
 
         // Prevenir menú contextual
         document.addEventListener('contextmenu', e => e.preventDefault());
+}
     </script>
 </body>
 
